@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Отправка материалов → почта</title>
+  <link rel="stylesheet" href="./style.css" />
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo" aria-hidden="true">↗</div>
+      <div>
+        <div class="title">Отправка материалов</div>
+        <div class="subtitle">Фото/видео → рабочая почта</div>
+      </div>
+    </div>
+    <nav class="topnav">
+      <a href="./admin.html" class="link">Админка</a>
+      <span id="topUser" class="pill hidden"></span>
+    </nav>
+  </header>
+
+  <main class="wrap">
+    <section id="loginBox" class="card">
+      <h2>Вход</h2>
+      <p class="muted">Войдите через Google. Доступ даётся по белому списку.</p>
+
+      <div id="g_id_onload"
+           data-client_id="__GOOGLE_CLIENT_ID__"
+           data-callback="onGoogleCredential"
+           data-auto_prompt="false"></div>
+
+      <div class="row">
+        <div class="g_id_signin"
+             data-type="standard"
+             data-size="large"
+             data-theme="outline"
+             data-text="signin_with"
+             data-shape="rectangular"
+             data-logo_alignment="left"></div>
+      </div>
+
+      <div id="loginStatus" class="muted"></div>
+    </section>
+
+    <section id="appBox" class="card hidden">
+      <div class="grid">
+        <div>
+          <h2>Черновик</h2>
+
+          <label class="lbl">Описание / нарушения</label>
+          <textarea id="text" rows="6" placeholder="Кратко: что на материалах, адрес, нарушения и т.д."></textarea>
+          <div class="row between">
+            <div class="muted">Можно писать свободным текстом.</div>
+            <div class="muted" id="textCount">0</div>
+          </div>
+
+          <label class="lbl">Материалы</label>
+          <div id="drop" class="drop">
+            <div class="dropTitle">Перетащите файлы сюда</div>
+            <div class="muted">или выберите через кнопку ниже. Поддерживаются фото и видео (если разрешено лимитами).</div>
+            <div class="row">
+              <input id="files" type="file" accept="image/*,video/*" multiple />
+            </div>
+            <div class="muted">Лимит: <span id="limTotal">—</span>, на файл: <span id="limFile">—</span></div>
+          </div>
+
+          <div class="fileHead">
+            <div class="muted">Файлы</div>
+            <div class="muted" id="totalSize">0 B</div>
+          </div>
+          <div id="fileList" class="fileList"></div>
+
+          <div class="row">
+            <button id="sendBtn">Отправить</button>
+            <button id="clearBtn" class="secondary">Очистить</button>
+            <button id="logoutBtn" class="ghost">Выйти</button>
+          </div>
+
+          <div id="progressWrap" class="progress hidden" aria-live="polite">
+            <div class="progressTrack">
+              <div id="progressBar" class="progressBar" style="width:0%"></div>
+            </div>
+            <div id="progressText" class="progressText">0%</div>
+          </div>
+
+          <div id="status" class="status"></div>
+        </div>
+
+        <aside class="side">
+          <h3>Получатели</h3>
+          <div class="searchRow">
+            <input id="rcpSearch" type="text" placeholder="Поиск получателя…" />
+            <button id="rcpClear" class="secondary small">Сброс</button>
+          </div>
+          <div class="row smallRow">
+            <button id="rcpSelectAll" class="secondary small">Выбрать всё</button>
+            <button id="rcpUnselectAll" class="secondary small">Снять всё</button>
+          </div>
+          <div id="recipients" class="recipients"></div>
+
+          <div class="note">
+            <div class="noteTitle">Подсказки</div>
+            <ul>
+              <li>Если ошибка “слишком большой размер” — отправляйте меньшими пачками.</li>
+              <li>Письмо уходит от сервисного ящика, но Reply-To будет вашим email.</li>
+            </ul>
+          </div>
+        </aside>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer"><span class="muted">v2 pilot UI</span></footer>
+  <script src="./app.js"></script>
+</body>
+</html>

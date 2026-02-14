@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Админка</title>
+  <link rel="stylesheet" href="./style.css" />
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="logo" aria-hidden="true">⚙</div>
+      <div>
+        <div class="title">Админ-панель</div>
+        <div class="subtitle">Whitelist • Получатели • Логи</div>
+      </div>
+    </div>
+    <nav class="topnav">
+      <a href="./index.html" class="link">Пользовательская форма</a>
+      <span id="topUser" class="pill hidden"></span>
+    </nav>
+  </header>
+
+  <main class="wrap">
+    <section id="loginBox" class="card">
+      <h2>Вход (только администратор)</h2>
+      <p class="muted">Войдите через Google. Доступ ограничен вашим email.</p>
+
+      <div id="g_id_onload"
+           data-client_id="__GOOGLE_CLIENT_ID__"
+           data-callback="onGoogleCredential"
+           data-auto_prompt="false"></div>
+
+      <div class="row">
+        <div class="g_id_signin"
+             data-type="standard"
+             data-size="large"
+             data-theme="outline"
+             data-text="signin_with"
+             data-shape="rectangular"
+             data-logo_alignment="left"></div>
+      </div>
+
+      <div id="loginStatus" class="muted"></div>
+    </section>
+
+    <section id="adminBox" class="card hidden">
+      <div class="tabs">
+        <button class="tab active" data-tab="users">Пользователи</button>
+        <button class="tab" data-tab="recipients">Получатели</button>
+        <button class="tab" data-tab="logs">Логи</button>
+        <button id="logoutBtn" class="ghost">Выйти</button>
+      </div>
+
+      <div id="status" class="status"></div>
+
+      <div id="tab_users" class="tabPane">
+        <div class="paneHead">
+          <h3>Whitelist пользователей</h3>
+          <div class="row">
+            <input id="newUserEmail" class="in" placeholder="email@company.com" />
+            <button id="addUserBtn" class="secondary">Добавить</button>
+          </div>
+        </div>
+        <div id="usersTable" class="table"></div>
+      </div>
+
+      <div id="tab_recipients" class="tabPane hidden">
+        <div class="paneHead">
+          <h3>Whitelist получателей</h3>
+          <div class="row">
+            <input id="rcpLabel" class="in" placeholder="Название (например ИБ)" />
+            <input id="rcpEmail" class="in" placeholder="sec@company.com" />
+            <button id="saveRcpBtn" class="secondary">Сохранить</button>
+          </div>
+        </div>
+        <div id="recipientsTable" class="table"></div>
+      </div>
+
+      <div id="tab_logs" class="tabPane hidden">
+        <div class="paneHead">
+          <h3>Логи отправок</h3>
+          <div class="row">
+            <button id="refreshLogsBtn" class="secondary">Обновить</button>
+            <span class="muted">Показываются последние 200 записей</span>
+          </div>
+        </div>
+        <div id="logsTable" class="table"></div>
+      </div>
+    </section>
+  </main>
+
+  <script src="./admin.js"></script>
+</body>
+</html>
