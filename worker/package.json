@@ -1,0 +1,8 @@
+{
+  "name": "whitelist-upload-proxy",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "jose": "^5.2.4"
+  }
+}

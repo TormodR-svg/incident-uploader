@@ -1,0 +1,10 @@
+name = "whitelist-upload-proxy"
+main = "src/index.js"
+compatibility_date = "2025-11-01"
+
+# Secrets/vars:
+# GOOGLE_CLIENT_ID
+# APPS_SCRIPT_URL
+# ADMIN_EMAIL
+# MAX_FILE_BYTES
+# MAX_TOTAL_BYTES
