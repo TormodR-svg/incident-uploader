@@ -1,5 +1,5 @@
 // v3 rebuild: JSON submit + client-side batching (no multipart parsing in Worker)
-const WORKER_BASE_URL = "__WORKER_URL__";
+const WORKER_BASE_URL = "https://whitelist-upload-proxy.upb-cap-rem.workers.dev";
 
 let idToken = null;
 let config = null;
