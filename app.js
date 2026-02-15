@@ -137,7 +137,7 @@ function renderFiles(){
     if (selectedFiles.length) setStatus("");
   }
 
-  $("sendBtn").disabled = (selectedFiles.length === 0 || total > maxTotal || selectedFiles.some(f=>f.size>maxFile));
+  $("sendBtn").disabled = (selectedFiles.length === 0 || selectedFiles.some(f=>f.size>maxFile));
 }
 
 function renderRecipients(list){
@@ -243,16 +243,99 @@ async function submit(){
   hideProgress();
 
   if (!idToken) return setStatus("Нет токена входа. Перезайдите.", "err");
+
   const recipients = getSelectedRecipients();
   if (!recipients.length) return setStatus("Выберите хотя бы одного получателя.", "err");
   if (!selectedFiles.length) return setStatus("Добавьте файлы.", "err");
 
-  const maxFile = config?.maxFileBytes ?? (20*1024*1024);
-  const maxTotal = config?.maxTotalBytes ?? (20*1024*1024);
-  const total = totalSelectedBytes();
+  const maxFile = config?.maxFileBytes ?? (15*1024*1024);
+  const maxPack = config?.maxTotalBytes ?? (15*1024*1024);
 
-  if (selectedFiles.some(f=>f.size>maxFile)) return setStatus("Есть файл больше лимита.", "err");
-  if (total > maxTotal) return setStatus("Суммарный размер больше лимита.", "err");
+  if (selectedFiles.some(f => f.size > maxFile)) {
+    return setStatus("Есть файл больше лимита. Уменьшите/сожмите файл.", "err");
+  }
+
+  const plan = makeBatches(selectedFiles, maxPack);
+  if (plan.error) {
+    return setStatus(
+      `Файл "${plan.file.name}" (${humanBytes(plan.file.size)}) больше лимита пакета ${humanBytes(maxPack)}. Уменьшите/сожмите файл.`,
+      "err"
+    );
+  }
+
+  const batches = plan.batches;
+  const baseText = $("text").value || "";
+
+  setStatus(`Отправляю… пакетов: ${batches.length}`);
+  $("sendBtn").disabled = true;
+
+  let totalSentEmails = 0;
+
+  try {
+    for (let i = 0; i < batches.length; i++){
+      const partText = (batches.length > 1)
+        ? `${baseText}\n\nПакет ${i+1}/${batches.length}`
+        : baseText;
+
+      // прогресс по пакетам (грубый, но понятный)
+      const basePct = Math.round((i / batches.length) * 100);
+      setProgress(basePct, `пакет ${i+1}/${batches.length}`);
+
+      const sent = await sendOneBatchXHR(batches[i], recipients, partText, i, batches.length);
+      totalSentEmails += (sent || 1);
+    }
+
+    setProgress(100, "готово");
+    setStatus(`Готово. Пакетов: ${batches.length}. Писем отправлено: ${totalSentEmails}.`, "ok");
+    selectedFiles = [];
+    $("files").value = "";
+    renderFiles();
+  } catch (e) {
+    console.error(e);
+    setStatus("Ошибка отправки: " + (e.message || e), "err");
+  } finally {
+    $("sendBtn").disabled = false;
+    setTimeout(()=> hideProgress(), 1200);
+  }
+}
+
+function sendOneBatchXHR(filesBatch, recipients, text, batchIndex, batchTotal){
+  return new Promise((resolve, reject) => {
+    const fd = new FormData();
+    fd.append("id_token", idToken);
+    fd.append("text", text);
+    fd.append("recipients_json", JSON.stringify(recipients));
+    for (const f of filesBatch) fd.append("files", f, f.name);
+
+    const xhr = new XMLHttpRequest();
+    xhr.open("POST", WORKER_BASE_URL + "/submit", true);
+    xhr.responseType = "json";
+
+    xhr.upload.onprogress = (e) => {
+      if (!e.lengthComputable) return;
+      const ratio = e.total ? (e.loaded / e.total) : 0;
+
+      // “глобальный” прогресс: доля пакета в общем
+      const slice = 100 / batchTotal;
+      const pct = (batchIndex * slice) + (ratio * slice * 0.9);
+      setProgress(pct, `пакет ${batchIndex+1}/${batchTotal}`);
+    };
+
+    xhr.onload = () => {
+      const resp = xhr.response || {};
+      if (xhr.status >= 200 && xhr.status < 300 && resp.ok) {
+        resolve(resp.sent || 1);
+      } else {
+        const err = resp?.error ? resp.error : ("HTTP_" + xhr.status);
+        reject(new Error(err));
+      }
+    };
+
+    xhr.onerror = () => reject(new Error("NETWORK_ERROR"));
+    xhr.send(fd);
+  });
+}
+
 
   setStatus("Отправляю…");
   setProgress(5, "подготовка");
