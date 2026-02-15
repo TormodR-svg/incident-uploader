@@ -14,6 +14,29 @@ function humanBytes(n){
   return (Math.round(x*100)/100) + " " + u[i];
 }
 
+function makeBatches(files, limitBytes){
+  const batches = [];
+  let cur = [];
+  let sum = 0;
+
+  for (const f of files){
+    if (f.size > limitBytes){
+      return { error: "ONE_FILE_TOO_LARGE_FOR_BATCH", file: f };
+    }
+    if (sum + f.size > limitBytes && cur.length){
+      batches.push(cur);
+      cur = [];
+      sum = 0;
+    }
+    cur.push(f);
+    sum += f.size;
+  }
+  if (cur.length) batches.push(cur);
+  return { batches };
+}
+
+
+
 function setStatus(msg, kind){
   const el = $("status");
   el.textContent = msg || "";
