@@ -443,3 +443,37 @@ function bind(){
   renderFiles();
 }
 bind();
+
+function fileToB64(file){
+  return new Promise((resolve, reject) => {
+    const r = new FileReader();
+    r.onload = () => {
+      const s = String(r.result || "");
+      const i = s.indexOf("base64,");
+      resolve(i >= 0 ? s.slice(i + 7) : "");
+    };
+    r.onerror = () => reject(new Error("FILE_READ_ERROR"));
+    r.readAsDataURL(file);
+  });
+}
+
+const filesPayload = [];
+for (const f of filesBatch) {
+  const b64 = await fileToB64(f);
+  filesPayload.push({ name: f.name, mime: f.type || "application/octet-stream", b64 });
+}
+
+const payload = {
+  action: "submit",
+  idToken: idToken,
+  text: text,
+  recipients: recipients,
+  files: filesPayload
+};
+
+const xhr = new XMLHttpRequest();
+xhr.open("POST", WORKER_BASE_URL + "/submit", true);
+xhr.setRequestHeader("Content-Type", "application/json");
+xhr.onload = () => { ... };
+xhr.onerror = () => reject(new Error("NETWORK_ERROR"));
+xhr.send(JSON.stringify(payload));
