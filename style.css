@@ -1,4 +1,3 @@
-/* Minimal clean UI */
 :root{
   --bg:#f6f7fb; --card:#fff; --text:#101828; --muted:#475467;
   --border:#e4e7ec; --primary:#2563eb; --primary2:#1d4ed8;
@@ -76,7 +75,6 @@ input[type=file]{width:100%}
 
 .footer{max-width:1100px;margin:8px auto 18px;padding:0 16px}
 
-/* Admin extras */
 .tabs{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:12px}
 .tab{background:#fff;color:var(--text);border:1px solid var(--border)}
 .tab.active{background:var(--primary);border-color:var(--primary);color:#fff}
@@ -90,7 +88,6 @@ tr:hover td{background:#f8fafc}
 .actions{white-space:nowrap}
 .paneHead{display:flex;justify-content:space-between;gap:16px;align-items:flex-end;flex-wrap:wrap;margin-bottom:10px}
 
-/* Progress (small) */
 .progress{display:flex;gap:10px;align-items:center;margin-top:12px}
 .progressTrack{flex:1;height:10px;border-radius:999px;background:#eef2ff;border:1px solid #d6e0ff;overflow:hidden}
 .progressBar{height:100%;border-radius:999px;background:var(--primary);width:0%}

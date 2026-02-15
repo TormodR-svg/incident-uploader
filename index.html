@@ -13,7 +13,7 @@
       <div class="logo" aria-hidden="true">↗</div>
       <div>
         <div class="title">Отправка материалов</div>
-        <div class="subtitle">Фото/видео → рабочая почта</div>
+        <div class="subtitle">Фото/небольшие файлы → рабочая почта</div>
       </div>
     </div>
     <nav class="topnav">
@@ -28,7 +28,7 @@
       <p class="muted">Войдите через Google. Доступ даётся по белому списку.</p>
 
       <div id="g_id_onload"
-           data-client_id="616333165145-3vqpftl27vvgj3i8a7biuk5c350t55i7.apps.googleusercontent.com"
+           data-client_id="__GOOGLE_CLIENT_ID__"
            data-callback="onGoogleCredential"
            data-auto_prompt="false"></div>
 
@@ -53,18 +53,23 @@
           <label class="lbl">Описание / нарушения</label>
           <textarea id="text" rows="6" placeholder="Кратко: что на материалах, адрес, нарушения и т.д."></textarea>
           <div class="row between">
-            <div class="muted">Можно писать свободным текстом.</div>
+            <div class="muted">Текст уйдёт в письмо вместе с файлами.</div>
             <div class="muted" id="textCount">0</div>
           </div>
 
           <label class="lbl">Материалы</label>
           <div id="drop" class="drop">
             <div class="dropTitle">Перетащите файлы сюда</div>
-            <div class="muted">или выберите через кнопку ниже. Поддерживаются фото и видео (если разрешено лимитами).</div>
+            <div class="muted">или выберите через кнопку ниже.</div>
             <div class="row">
               <input id="files" type="file" accept="image/*,video/*" multiple />
             </div>
-            <div class="muted">Лимит: <span id="limTotal">—</span>, на файл: <span id="limFile">—</span></div>
+            <div class="muted">
+              Лимит на файл: <span id="limFile">—</span> • Лимит пакета: <span id="limPack">—</span>
+            </div>
+            <div class="muted">
+              Если файлов много — отправка пойдёт пакетами автоматически.
+            </div>
           </div>
 
           <div class="fileHead">
@@ -102,10 +107,10 @@
           <div id="recipients" class="recipients"></div>
 
           <div class="note">
-            <div class="noteTitle">Подсказки</div>
+            <div class="noteTitle">Важно</div>
             <ul>
-              <li>Если ошибка “слишком большой размер” — отправляйте меньшими пачками.</li>
-              <li>Письмо уходит от сервисного ящика, но Reply-To будет вашим email.</li>
+              <li>Большие видео лучше отправлять отдельным режимом (Drive → ссылка). Этот режим рассчитан на фото и небольшие файлы.</li>
+              <li>Если несколько “нарушений” — для пилота лучше делать отдельные отправки (потом добавим карточки нарушений).</li>
             </ul>
           </div>
         </aside>
@@ -113,7 +118,7 @@
     </section>
   </main>
 
-  <footer class="footer"><span class="muted">v2 pilot UI</span></footer>
+  <footer class="footer"><span class="muted">v3 rebuild (json batches)</span></footer>
   <script src="./app.js"></script>
 </body>
 </html>
