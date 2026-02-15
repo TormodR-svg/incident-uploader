@@ -1,5 +1,5 @@
 // admin.js (v3 rebuild) — работает через /admin/* эндпоинты Worker
-const WORKER_BASE_URL = "__WORKER_URL__";
+const WORKER_BASE_URL = "https://whitelist-upload-proxy.upb-cap-rem.workers.dev";
 let idToken = null;
 
 function $(id){ return document.getElementById(id); }
