@@ -106,8 +106,23 @@ export default {
       }
     }
 
-    if (request.method === "POST" && path === "/submit") {
-      const ct = request.headers.get("Content-Type") || "";
+    if (url.pathname === "/submit") {
+  if (request.method === "OPTIONS") return new Response(null, { headers: cors(origin) });
+
+  // Просто проксируем тело запроса в Apps Script (stream), без парсинга.
+  const upstream = await fetch(env.APPS_SCRIPT_URL, {
+    method: "POST",
+    headers: { "Content-Type": request.headers.get("Content-Type") || "application/json" },
+    body: request.body,
+  });
+
+  const txt = await upstream.text();
+  return new Response(txt, {
+    status: upstream.status,
+    headers: { "Content-Type": "application/json; charset=utf-8", ...cors(origin) },
+  });
+}
+
       if (!ct.includes("multipart/form-data")) return badJson("EXPECTED_MULTIPART", origin);
 
       const form = await request.formData();
